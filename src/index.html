@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlexiReport Debug</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .debug-box {
+        background: white;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 10px 0;
+      }
+      .step {
+        background: #e8f4fd;
+        border-left: 4px solid #2196f3;
+        padding: 10px;
+        margin: 5px 0;
+      }
+      .success { border-left-color: #4caf50; background: #e8f5e8; }
+      .error { border-left-color: #f44336; background: #fdeaea; }
+    </style>
+  </head>
+  <body>
+    <div class="debug-box">
+      <h1>🔍 FlexiReport Debug Steps</h1>
+      
+      <div class="step success">
+        ✅ Step 1: HTML loaded successfully
+      </div>
+      
+      <div class="step success">
+        ✅ Step 2: CSS is working (you can see styled boxes)
+      </div>
+      
+      <div class="step" id="step3">
+        ⏳ Step 3: Testing JavaScript...
+      </div>
+      
+      <div class="step" id="step4">
+        ⏳ Step 4: Testing Vue from CDN...
+      </div>
+      
+      <div class="step" id="step5">
+        ⏳ Step 5: Testing Vite module loading...
+      </div>
+    </div>
+
+    <!-- Vue Mount Point -->
+    <div id="app">
+      <div class="debug-box">
+        <h2>Vue App Container</h2>
+        <p style="color: red; font-weight: bold;">
+          🔴 If you see this text, Vue has NOT mounted yet
+        </p>
+      </div>
+    </div>
+
+    <script>
+      console.log('🔥 Debug HTML started');
+      
+      // Step 3: Test JavaScript
+      document.getElementById('step3').innerHTML = '✅ Step 3: JavaScript is working';
+      document.getElementById('step3').className = 'step success';
+      console.log('✅ JavaScript working');
+      
+      // Step 4: Test Vue CDN (as fallback)
+      const vueScript = document.createElement('script');
+      vueScript.src = 'https://unpkg.com/vue@3/dist/vue.global.js';
+      vueScript.onload = () => {
+        document.getElementById('step4').innerHTML = '✅ Step 4: Vue CDN loaded successfully';
+        document.getElementById('step4').className = 'step success';
+        console.log('✅ Vue CDN available');
+      };
+      vueScript.onerror = () => {
+        document.getElementById('step4').innerHTML = '❌ Step 4: Vue CDN failed to load';
+        document.getElementById('step4').className = 'step error';
+        console.error('❌ Vue CDN failed');
+      };
+      document.head.appendChild(vueScript);
+      
+      // Step 5: Test Vite module loading
+      setTimeout(() => {
+        if (document.getElementById('app').innerHTML.includes('🔴')) {
+          document.getElementById('step5').innerHTML = '❌ Step 5: Vite/Vue module failed to mount';
+          document.getElementById('step5').className = 'step error';
+          console.error('❌ Vue app not mounted by Vite');
+          
+          // Show detailed debug info
+          const debugInfo = document.createElement('div');
+          debugInfo.className = 'debug-box';
+          debugInfo.innerHTML = `
+            <h3>🐛 Debug Information:</h3>
+            <ul>
+              <li><strong>App element exists:</strong> ${document.getElementById('app') ? 'Yes' : 'No'}</li>
+              <li><strong>Current app content:</strong> <pre>${document.getElementById('app').innerHTML}</pre></li>
+              <li><strong>Console errors:</strong> Check F12 Console tab</li>
+              <li><strong>Network errors:</strong> Check F12 Network tab</li>
+            </ul>
+            <p><strong>Next step:</strong> Check if src/main.js is loading correctly</p>
+          `;
+          document.body.appendChild(debugInfo);
+        } else {
+          document.getElementById('step5').innerHTML = '✅ Step 5: Vue app mounted successfully!';
+          document.getElementById('step5').className = 'step success';
+          console.log('✅ Vue app mounted by Vite');
+        }
+      }, 3000);
+    </script>
+    
+    <!-- Vite module loading -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
