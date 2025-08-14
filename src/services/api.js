@@ -39,20 +39,86 @@ api.interceptors.response.use(
 // Data Sources API
 export const dataSourcesAPI = {
   // Get all data sources
-  getDataSources: () => api.get('/data-sources/'),
+  getDataSources: async () => {
+    try {
+      return await api.get('/data-sources/')
+    } catch (error) {
+      console.error('API Error - getDataSources:', error)
+      throw error
+    }
+  },
   
   // Create new data source
-  createDataSource: (data) => api.post('/data-sources/', data),
+  createDataSource: async (data) => {
+    try {
+      return await api.post('/data-sources/', data)
+    } catch (error) {
+      console.error('API Error - createDataSource:', error)
+      throw error
+    }
+  },
   
   // Test connection to data source
-  testConnection: (data) => api.post('/data-sources/test-connection', data),
+  testConnection: async (data) => {
+    try {
+      return await api.post('/data-sources/test-connection', data)
+    } catch (error) {
+      console.error('API Error - testConnection:', error)
+      throw error
+    }
+  },
   
   // Get tables from data source
-  getTables: (dataSourceId) => api.get(`/data-sources/${dataSourceId}/tables`),
+  getTables: async (dataSourceId) => {
+    try {
+      return await api.get(`/data-sources/${dataSourceId}/tables`)
+    } catch (error) {
+      console.error(`API Error - getTables for dataSource ${dataSourceId}:`, error)
+      throw error
+    }
+  },
   
   // Get columns from table
-  getTableColumns: (dataSourceId, tableName) => 
-    api.get(`/data-sources/${dataSourceId}/tables/${tableName}/columns`),
+  getTableColumns: async (dataSourceId, tableName) => {
+    try {
+      return await api.get(`/data-sources/${dataSourceId}/tables/${tableName}/columns`)
+    } catch (error) {
+      console.error(`API Error - getTableColumns for ${tableName}:`, error)
+      throw error
+    }
+  },
+  
+  // Get sample data from table
+  getSampleData: async (dataSourceId, tableName, limit = 10) => {
+    try {
+      return await api.get(`/data-sources/${dataSourceId}/tables/${tableName}/sample`, {
+        params: { limit }
+      })
+    } catch (error) {
+      console.error(`API Error - getSampleData for ${tableName}:`, error)
+      throw error
+    }
+  },
+  
+  // Update data source
+  updateDataSource: async (dataSourceId, data) => {
+    try {
+      return await api.put(`/data-sources/${dataSourceId}`, data)
+    } catch (error) {
+      console.error('API Error - updateDataSource:', error)
+      throw error
+    }
+  },
+  
+  // Delete data source
+  deleteDataSource: async (dataSourceId) => {
+    try {
+      return await api.delete(`/data-sources/${dataSourceId}`)
+    } catch (error) {
+      console.error('API Error - deleteDataSource:', error)
+      throw error
+    }
+  }
 }
 
 // Templates API
@@ -86,6 +152,20 @@ export const reportsAPI = {
   
   // Get report history
   getReportHistory: (params = {}) => api.get('/reports/history', { params }),
+  
+  // Execute SQL query
+  executeQuery: async (dataSourceId, query, limit = 25) => {
+    try {
+      return await api.post('/reports/execute-query', {
+        dataSourceId,
+        query,
+        limit
+      })
+    } catch (error) {
+      console.error('API Error - executeQuery:', error)
+      throw error
+    }
+  }
 }
 
 // Permissions API
